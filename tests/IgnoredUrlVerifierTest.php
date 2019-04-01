@@ -21,6 +21,7 @@ class IgnoredUrlVerifierTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider isUrlIgnoredHostsDataProvider
+     * @dataProvider isUrlIgnoredSchemesDataProvider
      */
     public function testIsUrlIgnored(string $url, array $exclusions, bool $expectedIsIgnored)
     {
