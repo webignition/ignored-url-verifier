@@ -20,50 +20,58 @@ class IgnoredUrlVerifierTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider isUrlIgnoredDataProvider
+     * @dataProvider isUrlIgnoredHostsDataProvider
      */
-    public function testIsUrlIgnored(string $url, array $domainsToIgnore, bool $expectedIsIgnored)
+    public function testIsUrlIgnored(string $url, array $exclusions, bool $expectedIsIgnored)
     {
         $this->assertEquals(
             $expectedIsIgnored,
-            $this->ignoredUrlVerifier->isUrlIgnored($url, $domainsToIgnore)
+            $this->ignoredUrlVerifier->isUrlIgnored($url, $exclusions)
         );
     }
 
-    public function isUrlIgnoredDataProvider(): array
+    public function isUrlIgnoredHostsDataProvider(): array
     {
         return [
-            'no domains to ignore' => [
+            'hosts: none' => [
                 'url' => 'http://example.com',
-                'domainsToIgnore' => [],
+                'exclusions' => [],
                 'expectedIsIgnored' => false,
             ],
-            'no match' => [
+            'hosts: no match' => [
                 'url' => 'http://example.com',
-                'domainsToIgnore' => [
-                    'foo.example.com',
-                    'bar.example.com',
+                'exclusions' => [
+                    IgnoredUrlVerifier::EXCLUSIONS_HOSTS => [
+                        'foo.example.com',
+                        'bar.example.com',
+                    ],
                 ],
                 'expectedIsIgnored' => false,
             ],
-            'ascii url matches ascii domain' => [
+            'hosts: ascii url matches ascii domain' => [
                 'url' => 'http://example.com',
-                'domainsToIgnore' => [
-                    'example.com',
+                'exclusions' => [
+                    IgnoredUrlVerifier::EXCLUSIONS_HOSTS => [
+                        'example.com',
+                    ],
                 ],
                 'expectedIsIgnored' => true,
             ],
-            'punycode url matches unicode domain' => [
+            'hosts: punycode url matches unicode domain' => [
                 'url' => 'http://xn--u2u.com',
-                'domainsToIgnore' => [
-                    '搜.com',
+                'exclusions' => [
+                    IgnoredUrlVerifier::EXCLUSIONS_HOSTS => [
+                        '搜.com',
+                    ],
                 ],
                 'expectedIsIgnored' => true,
             ],
-            'unicode url matches punycode domain' => [
+            'hosts: unicode url matches punycode domain' => [
                 'url' => 'http://搜.com',
-                'domainsToIgnore' => [
-                    'xn--u2u.com',
+                'exclusions' => [
+                    IgnoredUrlVerifier::EXCLUSIONS_HOSTS => [
+                        'xn--u2u.com',
+                    ],
                 ],
                 'expectedIsIgnored' => true,
             ],
