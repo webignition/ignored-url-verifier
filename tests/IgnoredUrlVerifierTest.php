@@ -77,4 +77,34 @@ class IgnoredUrlVerifierTest extends \PHPUnit\Framework\TestCase
             ],
         ];
     }
+
+    public function isUrlIgnoredSchemesDataProvider(): array
+    {
+        return [
+            'schemes: none' => [
+                'url' => 'http://example.com',
+                'exclusions' => [],
+                'expectedIsIgnored' => false,
+            ],
+            'schemes: ftp, mailto; no match' => [
+                'url' => 'http://example.com',
+                'exclusions' => [
+                    IgnoredUrlVerifier::EXCLUSIONS_SCHEMES => [
+                        IgnoredUrlVerifier::URL_SCHEME_FTP,
+                        IgnoredUrlVerifier::URL_SCHEME_MAILTO,
+                    ],
+                ],
+                'expectedIsIgnored' => false,
+            ],
+            'schemes: mailto match' => [
+                'url' => 'mailto:user@example.com',
+                'exclusions' => [
+                    IgnoredUrlVerifier::EXCLUSIONS_SCHEMES => [
+                        IgnoredUrlVerifier::URL_SCHEME_MAILTO,
+                    ],
+                ],
+                'expectedIsIgnored' => true,
+            ],
+        ];
+    }
 }

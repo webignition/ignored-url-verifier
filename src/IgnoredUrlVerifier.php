@@ -12,6 +12,12 @@ class IgnoredUrlVerifier
     const EXCLUSIONS_SCHEMES = 'schemes';
     const EXCLUSIONS_URLS = 'urls';
 
+    const URL_SCHEME_MAILTO = 'mailto';
+    const URL_SCHEME_ABOUT = 'about';
+    const URL_SCHEME_JAVASCRIPT = 'javascript';
+    const URL_SCHEME_FTP = 'ftp';
+    const URL_SCHEME_TEL = 'tel';
+
     public function isUrlIgnored(string $url, array $exclusions): bool
     {
         $uri = new Uri($url);
