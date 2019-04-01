@@ -43,11 +43,26 @@ class IgnoredUrlVerifier
 
         $excludedUrls = $exclusions[self::EXCLUSIONS_URLS] ?? [];
         $excludedUrls = is_array($excludedUrls) ? $excludedUrls : [];
+        $excludedUrls = $this->normalizeUrlExclusions($excludedUrls);
 
         if (in_array((string) $uri, $excludedUrls)) {
             return true;
         }
 
         return false;
+    }
+
+    private function normalizeUrlExclusions(array $excludedUrls): array
+    {
+        $normalisedUrlExclusions = [];
+
+        foreach ($excludedUrls as $excludedUrl) {
+            $uri = new Uri($excludedUrl);
+            $uri = Normalizer::normalize($uri);
+
+            $normalisedUrlExclusions[] = (string) $uri;
+        }
+
+        return $normalisedUrlExclusions;
     }
 }

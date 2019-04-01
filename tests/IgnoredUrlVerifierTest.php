@@ -22,6 +22,7 @@ class IgnoredUrlVerifierTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider isUrlIgnoredHostsDataProvider
      * @dataProvider isUrlIgnoredSchemesDataProvider
+     * @dataProvider isUrlIgnoredUrlsDataProvider
      */
     public function testIsUrlIgnored(string $url, array $exclusions, bool $expectedIsIgnored)
     {
@@ -102,6 +103,35 @@ class IgnoredUrlVerifierTest extends \PHPUnit\Framework\TestCase
                 'exclusions' => [
                     IgnoredUrlVerifier::EXCLUSIONS_SCHEMES => [
                         IgnoredUrlVerifier::URL_SCHEME_MAILTO,
+                    ],
+                ],
+                'expectedIsIgnored' => true,
+            ],
+        ];
+    }
+
+    public function isUrlIgnoredUrlsDataProvider(): array
+    {
+        return [
+            'urls: none' => [
+                'url' => 'http://example.com',
+                'exclusions' => [],
+                'expectedIsIgnored' => false,
+            ],
+            'urls: no match' => [
+                'url' => 'http://example.com',
+                'exclusions' => [
+                    IgnoredUrlVerifier::EXCLUSIONS_URLS => [
+                        'https://example.com',
+                    ],
+                ],
+                'expectedIsIgnored' => false,
+            ],
+            'urls: match' => [
+                'url' => 'http://example.com',
+                'exclusions' => [
+                    IgnoredUrlVerifier::EXCLUSIONS_URLS => [
+                        'http://example.com',
                     ],
                 ],
                 'expectedIsIgnored' => true,
